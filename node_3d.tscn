@@ -1,0 +1,126 @@
+[gd_scene load_steps=17 format=3 uid="uid://bd315x0ie5tny"]
+
+[ext_resource type="Shader" path="res://node_3d.gdshader" id="1_h0hki"]
+[ext_resource type="Texture2D" uid="uid://b4el5d3a2pm8d" path="res://Poliigon_GrassPatchyGround_4585_BaseColor.jpg" id="2_n3lgh"]
+[ext_resource type="Script" path="res://character_body_3d.gd" id="3_nhxxq"]
+[ext_resource type="Shader" path="res://flaree.gdshader" id="4_hc1g1"]
+[ext_resource type="Script" path="res://color_rect.gd" id="5_hwijb"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xwyvg"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_y5bar"]
+sky_material = SubResource("ProceduralSkyMaterial_xwyvg")
+
+[sub_resource type="Environment" id="Environment_0fym7"]
+background_mode = 2
+sky = SubResource("Sky_y5bar")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2tqh7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8c3dc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3358g"]
+shader = ExtResource("4_hc1g1")
+shader_parameter/sun_position = Vector2(0, 0)
+shader_parameter/tint = Vector3(1.4, 1.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t253p"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2kd23"]
+render_priority = 0
+shader = ExtResource("1_h0hki")
+shader_parameter/noise_intensity = 0.0
+shader_parameter/uv_scale = 10.0
+shader_parameter/albedo_texture = ExtResource("2_n3lgh")
+
+[sub_resource type="BoxMesh" id="BoxMesh_6dnwl"]
+material = SubResource("ShaderMaterial_2kd23")
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hffog"]
+size = Vector3(20, 20, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_y4gdi"]
+size = Vector3(20, 20, 20)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0fym7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 212.382, -75.9697)
+shadow_enabled = true
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.48605, 0)
+script = ExtResource("3_nhxxq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0213699, 0)
+shape = SubResource("CapsuleShape3D_2tqh7")
+
+[node name="Node3D" type="Node3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.662712, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.581113)
+
+[node name="Marker3D" type="Marker3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.71459, -0.477668)
+gizmo_extents = 0.2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_8c3dc")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+
+[node name="ColorRect" type="ColorRect" parent="Control/CanvasLayer"]
+material = SubResource("ShaderMaterial_3358g")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_hwijb")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_t253p")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_6dnwl")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.89313, -26.057)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_hffog")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_y4gdi")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.2034, 8.7524, -27.5937)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+shape = SubResource("BoxShape3D_hffog")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3"]
+mesh = SubResource("BoxMesh_y4gdi")
